@@ -1,27 +1,66 @@
 {
   "expo": {
-    "name": "buscarioca",
+    "name": "BusCarioca",
     "slug": "buscarioca",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/favicon.png",
+    "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#000"
     },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Permita que o aplicativo use sua localização."
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/LondrinaSolid-Regular.ttf",
+            "./assets/fonts/LondrinaSolid-Thin.ttf"
+          ]
+        }
+      ]
+    ],
+    "runtimeVersion": "1.0.0",
     "ios": {
-      "supportsTablet": true
+      "name": "Buscarioca",
+      "slug": "Buscarioca",
+      "icon": "./assets/favicon.png",
+      "supportsTablet": true,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDBL82YIr-EE0FMMDgiRrU47bZLggtWUWk"
+        },
+        "runtimeVersion": "1.0.0"
+      },
+      "bundleIdentifier": "com.gabrielcampelo.buscarioca"
     },
     "android": {
+      "runtimeVersion": "1.0.0",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/favicon.png"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDBL82YIr-EE0FMMDgiRrU47bZLggtWUWk"
+        }
+      },
+      "package": "com.gabrielcampelo.buscarioca"
     },
+    "platforms": ["android", "ios"],
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2b8702d6-b310-4a6b-ad1d-657acff9c004"
+      }
     }
   }
 }
