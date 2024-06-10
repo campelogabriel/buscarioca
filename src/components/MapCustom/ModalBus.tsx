@@ -41,16 +41,27 @@ function ModalBus({
       }}
     >
       <View
-        style={{ ...styles.header, borderColor: !isNight ? "#ddd" : "#000" }}
+        style={{
+          ...styles.tagInfo,
+          borderBottomColor: `#0e997d`,
+          borderBottomWidth: 3,
+        }}
       >
-        <Text
+        <View
           style={{
-            textTransform: "uppercase",
-            color: isNight ? "#fff" : "#000",
+            ...styles.tag,
+            backgroundColor: `#0e997d`,
           }}
         >
-          Numeração: {modalInfoBus.ordem}
-        </Text>
+          <Text
+            style={{
+              color: "#fff",
+              fontWeight: "bold",
+            }}
+          >
+            Linha {modalInfoBus.linha}
+          </Text>
+        </View>
         <TouchableOpacity onPress={handleModalBus}>
           <AntDesign
             style={styles.closeBtn}
@@ -62,67 +73,24 @@ function ModalBus({
       </View>
       <View
         style={{
-          ...styles.tagInfo,
-          borderBottomColor: `#${modalInfoBus.backgroundColor}`,
-          borderBottomWidth: 3,
-        }}
-      >
-        <View
-          style={{
-            ...styles.tag,
-            backgroundColor: `#${modalInfoBus.backgroundColor}`,
-          }}
-        >
-          <MaterialIcons
-            name="directions-bus"
-            size={20}
-            color={`#${modalInfoBus.textColor}`}
-          />
-          <Text
-            style={{ color: `#${modalInfoBus.textColor}`, fontWeight: "bold" }}
-          >
-            Linha {modalInfoBus.linha}
-          </Text>
-        </View>
-        {/* <View>
-          <Text
-            style={{
-              paddingHorizontal: 4,
-              color: `#${modalInfoBus.backgroundColor}`,
-              fontWeight: "bold",
-              fontSize: 18,
-              // textShadowColor: "#000",
-              // textShadowOffset: {
-              //   height: 1,
-              //   width: 0,
-              // },
-              // textShadowRadius: 2,
-            }}
-          >
-            {modalInfoBus.consorcio}
-          </Text>
-        </View> */}
-      </View>
-      <View
-        style={{
           flexDirection: "row",
           gap: 12,
           alignItems: "center",
         }}
       >
-        <MaterialCommunityIcons
-          name="highway"
-          size={24}
+        <MaterialIcons
+          name="directions-bus"
+          size={21}
           color={isNight ? "#fff" : "#000"}
         />
         <Text style={{ color: isNight ? "#fff" : "#000" }}>
-          {modalInfoBus.trajeto}
+          Numeração: {modalInfoBus.ordem}
         </Text>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
         <MaterialCommunityIcons
           name="map-marker-distance"
-          size={24}
+          size={22}
           color={isNight ? "#fff" : "#000"}
         />
         <Text style={{ color: isNight ? "#fff" : "#000" }}>
@@ -143,12 +111,12 @@ function ModalBus({
         </Text>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-        {/* <AntDesign
-          name="clockcircleo"
-          size={24}
+        <Octicons
+          style={{ paddingLeft: 2 }}
+          name="clock"
+          size={20}
           color={isNight ? "#fff" : "#000"}
-        /> */}
-        <Octicons name="clock" size={20} color={isNight ? "#fff" : "#000"} />
+        />
         <Text style={{ color: isNight ? "#fff" : "#000" }}>
           Última Atualização: {time}
         </Text>
@@ -162,7 +130,6 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    gap: 20,
     position: "absolute",
     elevation: 3,
     padding: 16,
@@ -170,16 +137,8 @@ const styles = StyleSheet.create({
     left: 0,
     width: "100%",
     borderWidth: 1,
+    gap: 22,
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    // borderColor: "#eee",
-    borderBottomWidth: 1,
-    paddingBottom: 2,
-  },
-
   tagInfo: {
     flexDirection: "row",
     flex: 1,
@@ -188,7 +147,6 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   tag: {
-    // width: "35%",
     flexDirection: "row",
     paddingHorizontal: 12,
     gap: 9,
