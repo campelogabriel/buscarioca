@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { View, Animated, Text } from "react-native";
-import { Callout, Marker } from "react-native-maps";
-import busColor from "../../utils/busColor";
+import { Animated, Image } from "react-native";
+import { Marker } from "react-native-maps";
 import { Position } from "../../types/PositionType";
+import BusMarker from "../../../assets/markerBus.svg";
 
 const MarkerAnimated = Animated.createAnimatedComponent(Marker);
 
@@ -19,14 +19,7 @@ function MarkerCustom({
 }) {
   const [newCoordsBus, setNewCoordsBus] = useState<Position | null>();
   const [rootBus, setRootBus] = useState<number>();
-  const [imgBusN, setImgBusN] = useState(busColor);
-
-  // const imgBus = require("../../../assets/busImage-3.png");
-  const imgBus = require("../../../assets/4A86E8.png");
-
-  // onibus icone
-  // let path = "v".concat(bus.backgroundColor);
-  // const img = busColor[path];
+  const imgBus = require("../../../assets/markerBus.png");
 
   // @ts-ignore
   const marker = useRef<MarkerAnimated | null>();
@@ -38,8 +31,6 @@ function MarkerCustom({
 
   useEffect(() => {
     setNewCoordsBus(coords);
-    //@ts-ignore
-    // marker?.current?.animateMarkerToCoordinate(coords, 500);
   }, [coords]);
 
   useEffect(() => {
@@ -57,15 +48,15 @@ function MarkerCustom({
       setModalInfoBus(bus);
       marker.current.showCallout();
     }
-  }, [newCoordsBus]); //removido markerSelect
+  }, [newCoordsBus]);
 
   if (!newCoordsBus && !rootBus) return;
-
   if (!newCoordsBus) return;
 
   return (
     <>
       <MarkerAnimated
+        style={{ zIndex: markerSelect.current == bus.ordem ? 1 : 0 }}
         ref={(el) => {
           marker.current = el;
           markerBusArray.current[index] = el;
@@ -77,7 +68,6 @@ function MarkerCustom({
           latitude: newCoordsBus.latitude,
           longitude: newCoordsBus.longitude,
         }}
-        icon={imgBusN[`v${bus.backgroundColor}`]}
         tracksViewChanges={false}
         calloutAnchor={{ x: 0.5, y: -0.2 }}
         onPress={() => {
@@ -85,6 +75,7 @@ function MarkerCustom({
           setModalInfoBus(bus);
           markerSelect.current = bus.ordem;
         }}
+        icon={require("../../../assets/markerBus.png")}
       />
     </>
   );
