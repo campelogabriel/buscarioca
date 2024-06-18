@@ -13,6 +13,11 @@ function NoBattery() {
         duration: 1500,
         useNativeDriver: true,
       }),
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
     ]).start();
   }, []);
 

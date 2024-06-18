@@ -2,11 +2,13 @@ import { useRef, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Keyboard,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Feather, Ionicons } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
 import { addLines } from "../../redux/sliceLines/sliceLines";
 import BlockRender from "./AnimationHeader/BlockRender";
@@ -24,7 +26,6 @@ function Header({
   enabledBattery,
   setEnabledBattery,
   setCount,
-  refetch,
 }) {
   const [line, setLine] = useState<string>("");
   const [isFocus, setIsFocus] = useState(false);
@@ -32,17 +33,17 @@ function Header({
   const settings = useSelector(useSettings);
 
   const refInput = useRef<any>();
-
   const dispatch = useDispatch();
+
   function handleSubmitBusLine() {
-    if (!enabledBattery) {
-      setLine("");
+    if (!line || line == "" || !enabledBattery) {
+      refInput.current.blur?.();
+      Keyboard.dismiss();
       return;
     }
-    if (!line || line == "") return;
     dispatch(addLines(line));
-    // setLine("");
-    refetch();
+    setIsFocus(false);
+    Keyboard.dismiss();
   }
 
   return (
@@ -50,17 +51,16 @@ function Header({
       style={{
         ...styles.container,
         top: Dimensions.get("screen").height * 0.03,
+        marginHorizontal: isFocus ? 40 : "",
       }}
     >
       <View
         style={{
-          ...styles.header,
+          ...styles.batteryHeader,
           backgroundColor:
             settings.mapStyles == "night" ? "#111111e4" : "#ffff",
           borderColor: settings.mapStyles == "night" ? "#444" : "#ccc",
-          justifyContent: isFocus ? "center" : "flex-start",
-          paddingHorizontal: !isFocus ? 30 : 0,
-          gap: !isFocus ? 40 : 0,
+          display: isFocus ? "none" : "flex",
         }}
       >
         <TouchableOpacity
@@ -74,9 +74,34 @@ function Header({
               resizeMode: "center",
               height: 30,
               width: 40,
-              display: isFocus ? "none" : "flex",
             }}
             source={images[count > 6 ? 6 : count]}
+          />
+        </TouchableOpacity>
+      </View>
+      <View
+        style={{
+          ...styles.header,
+          backgroundColor:
+            settings.mapStyles == "night" ? "#111111e4" : "#ffff",
+          borderColor: settings.mapStyles == "night" ? "#444" : "#ccc",
+          paddingHorizontal: 30,
+          marginRight: isFocus ? 30 : 0,
+          gap: 40,
+          width: isFocus ? "100%" : "220",
+        }}
+      >
+        <TouchableOpacity
+          style={{ display: isFocus ? "flex" : "none" }}
+          onPress={() => {
+            refInput.current.blur?.();
+            Keyboard.dismiss();
+          }}
+        >
+          <Ionicons
+            name="close"
+            size={24}
+            color={settings.mapStyles == "night" ? "#ccc" : "#555"}
           />
         </TouchableOpacity>
         <Input
@@ -88,8 +113,7 @@ function Header({
           setIsFocus={setIsFocus}
           handleSubmitBusLine={handleSubmitBusLine}
         />
-
-        <View>
+        <>
           {busLines.length == 0 || !enabledBattery ? (
             <MaterialIcons
               name="satellite-alt"
@@ -109,16 +133,27 @@ function Header({
               color={settings.mapStyles == "night" ? "#fff" : "#008800"}
             />
           )}
-        </View>
-      </View>
-      {/* TOASTER */}
-      {busLines.length > 0 && (
-        <BlockRender
-          count={count}
-          busesOnMap={busesOnMap}
-          isFetching={isFetching}
+        </>
+        <Feather
+          onPress={() => {
+            handleSubmitBusLine();
+          }}
+          style={{
+            display: isFocus ? "flex" : "none",
+          }}
+          name="search"
+          size={20}
+          color="#777"
         />
-      )}
+        {/* TOASTER */}
+        {busLines.length > 0 && (
+          <BlockRender
+            count={count}
+            busesOnMap={busesOnMap}
+            isFetching={isFetching}
+          />
+        )}
+      </View>
     </View>
   );
 }
@@ -128,17 +163,32 @@ const styles = StyleSheet.create({
     zIndex: 9,
     position: "absolute",
     alignItems: "center",
-    gap: 8,
+    gap: 16,
+    paddingHorizontal: 24,
+    flexDirection: "row",
+    elevation: 5,
+  },
+
+  batteryHeader: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    elevation: 5,
   },
   header: {
-    width: "100%",
     height: 55,
     flexDirection: "row",
     paddingVertical: 10,
     alignItems: "center",
-    elevation: 12,
+    justifyContent: "space-between",
     borderWidth: 1,
-    borderRadius: 9,
+    borderRadius: 20,
+    position: "relative",
+    elevation: 5,
   },
 });
 

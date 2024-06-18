@@ -6,9 +6,9 @@ function Input({
   setLine,
   setIsFocus,
   handleSubmitBusLine,
-  isFocus,
   refInput,
   isNight,
+  isFocus,
 }) {
   const keyboardDidHideCallback = () => {
     refInput.current.blur?.();
