@@ -1,5 +1,11 @@
 import { useFonts } from "expo-font";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { removeLines, useLines } from "src/redux/sliceLines/sliceLines";
@@ -22,21 +28,28 @@ function LineScreen({ navigation }) {
       </View>
       <View style={styles.blockLines}>
         {lines.length > 0 ? (
-          lines.map((line, i) => (
-            <View key={i} style={styles.lineEffect}>
-              <View style={styles.line}>
-                <Text style={styles.lineText}>Linha {line}</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    dispatch(removeLines(line));
-                    dispatch(removeBusByLine(line));
-                  }}
-                >
-                  <Text style={styles.deleteText}>Deletar</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ))
+          <FlatList
+            contentContainerStyle={{ flex: 1, justifyContent: "center" }}
+            style={{ paddingHorizontal: 8 }}
+            data={lines}
+            renderItem={({ item }) => {
+              return (
+                <View style={styles.lineEffect}>
+                  <View style={styles.line}>
+                    <Text style={styles.lineText}>Linha {item}</Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        dispatch(removeLines(item));
+                        dispatch(removeBusByLine(item));
+                      }}
+                    >
+                      <Text style={styles.deleteText}>Deletar</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              );
+            }}
+          />
         ) : (
           <Text
             style={{
@@ -52,8 +65,8 @@ function LineScreen({ navigation }) {
               },
             }}
           >
-            Nenhuma linha definida pelo usuário. Digite uma linha na página
-            Home.
+            Nenhuma Linha Definida pelo Usuário. Digite uma Linha na Página
+            Inicial.
           </Text>
         )}
       </View>
@@ -128,6 +141,7 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingRight: 10,
     paddingBottom: 10,
+    marginTop: 10,
   },
   line: {
     padding: 12,
