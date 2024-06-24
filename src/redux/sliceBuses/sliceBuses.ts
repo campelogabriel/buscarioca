@@ -20,15 +20,15 @@ const sliceBuses = createSlice({
       if (busOld) {
         isLowerThan5Meters =
           getDifference(
-            Number(busOld.latitude.replace(",", ".")),
-            Number(payload.latitude.replace(",", ".")),
-            Number(busOld.longitude.replace(",", ".")),
-            Number(payload.longitude.replace(",", "."))
+            busOld.latitude,
+            payload.latitude,
+            busOld.longitude,
+            payload.longitude
           ) < 0.05;
 
         isSamePosition =
-          busOld.latitude == Number(payload.latitude.replace(",", ".")) &&
-          busOld.longitude == Number(payload.longitude.replace(",", "."));
+          busOld.latitude == payload.latitude &&
+          busOld.longitude == payload.longitude;
       }
 
       let busUpdated;
@@ -37,11 +37,10 @@ const sliceBuses = createSlice({
         busUpdated = {
           ordem: busOld.ordem,
           linha: busOld.linha,
+          oldName: busOld.oldName,
+          destino: payload.destino,
+          noturno: payload.noturno,
           count: isLowerThan5Meters ? busOld.count : busOld.count + 1,
-          backgroundColor: busOld.backgroundColor,
-          textColor: busOld.textColor,
-          trajeto: busOld.trajeto,
-          consorcio: busOld.consorcio,
           latitude: isLowerThan5Meters ? busOld.latitude : payload.latitude,
           longitude: isLowerThan5Meters ? busOld.longitude : payload.longitude,
           distancia: payload.distancia,
@@ -51,12 +50,12 @@ const sliceBuses = createSlice({
             ? busOld.root
             : getRotation(
                 {
-                  latitude: Number(busOld.latitude.replace(",", ".")),
-                  longitude: Number(busOld.longitude.replace(",", ".")),
+                  latitude: busOld.latitude,
+                  longitude: busOld.longitude,
                 },
                 {
-                  latitude: Number(payload.latitude.replace(",", ".")),
-                  longitude: Number(payload.longitude.replace(",", ".")),
+                  latitude: payload.latitude,
+                  longitude: payload.longitude,
                 }
               ),
         };

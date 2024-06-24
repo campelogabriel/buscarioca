@@ -1,15 +1,14 @@
 export type Bus = {
   ordem: string;
   linha: string;
-  latitude: string;
-  longitude: string;
+  latitude: number;
+  longitude: number;
   distancia: number;
   velocidade: string;
   datahora: string;
-  backgroundColor: string;
-  textColor: string;
-  trajeto: string;
-  consorcio: string;
+  destino: string;
+  oldName?: string;
+  noturno: boolean;
   count?: number;
   root?: number;
 };
