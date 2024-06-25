@@ -15,6 +15,7 @@ import BlockRender from "./AnimationHeader/BlockRender";
 import batteries from "../../utils/battery";
 import { Dimensions } from "react-native";
 import Input from "./Input";
+import lines from "../../utils/lines.json";
 import { useSelector } from "react-redux";
 import { useSettings } from "../../redux/sliceSettings/sliceSettings";
 
@@ -39,6 +40,14 @@ function Header({
     if (!line || line == "" || !enabledBattery) {
       refInput.current.blur?.();
       Keyboard.dismiss();
+      return;
+    }
+    if (line.includes(",")) {
+      line.split(",").map((a) => {
+        dispatch(addLines(a.trim()));
+      });
+      Keyboard.dismiss();
+      setIsFocus(false);
       return;
     }
     dispatch(addLines(line));
@@ -160,7 +169,7 @@ function Header({
 
 const styles = StyleSheet.create({
   container: {
-    zIndex: 9,
+    zIndex: 2,
     position: "absolute",
     alignItems: "center",
     gap: 16,
@@ -180,6 +189,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   header: {
+    zIndex: 9,
     height: 55,
     flexDirection: "row",
     paddingVertical: 10,

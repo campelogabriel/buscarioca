@@ -31,7 +31,6 @@ function HeaderManual({
   setEnabledBattery,
   setCountFetch,
 }) {
-  const [showNewLine, setShowNewLine] = useState(false);
   const [line, setLine] = useState<string>("");
   const [isFocus, setIsFocus] = useState(false);
   const [images, setImages] = useState(batteries);
@@ -46,14 +45,18 @@ function HeaderManual({
       refInput.current.blur?.();
       return;
     }
-    setShowNewLine(true);
+    if (line.includes(",")) {
+      line.split(",").map((a) => {
+        dispatch(addLines(a.trim()));
+      });
+      Keyboard.dismiss();
+      setIsFocus(false);
+      return;
+    }
+
     dispatch(addLines(line));
     Keyboard.dismiss();
     setIsFocus(false);
-
-    setTimeout(() => {
-      setShowNewLine(false);
-    }, 1800);
   }
 
   const { data, refetch, isPaused } = useQueryBusManual(
@@ -65,8 +68,7 @@ function HeaderManual({
   useEffect(() => {
     if (data && !isPaused) {
       data?.data?.buses?.map((bus: Bus) => dispatch(addBus(bus)));
-      console.log(data);
-      console.log("Onibus Encontrados: ", data?.data?.buses.length);
+     
     }
 
     if (count == 6) {
@@ -119,25 +121,6 @@ function HeaderManual({
           width: isFocus ? "100%" : "220",
         }}
       >
-        <View
-          style={{
-            position: "absolute",
-            top: 80,
-            display: showNewLine ? "flex" : "none",
-          }}
-        >
-          <Text
-            style={{
-              backgroundColor: "#0e997d",
-              color: "#fff",
-              padding: 8,
-              fontSize: 12,
-              fontWeight: "bold",
-            }}
-          >
-            Linha adicionada no sistema
-          </Text>
-        </View>
         <TouchableOpacity
           style={{ display: isFocus ? "flex" : "none" }}
           onPress={() => {
