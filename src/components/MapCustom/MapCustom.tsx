@@ -1,11 +1,9 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { StyleSheet, Text, View } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import EstiloMapa from "../../utils/mapStyle";
 import { useEffect, useRef, useState } from "react";
 import ModalBus from "./ModalBus";
 import MarkerCustom from "./MarkerCustom";
-
-import userIconX from "../../../assets/icon-user.png";
 
 import { useSelector } from "react-redux";
 import { useBuses } from "../../redux/sliceBuses/sliceBuses";
@@ -13,19 +11,20 @@ import { useSettings } from "../../redux/sliceSettings/sliceSettings";
 import { Bus } from "../../types/BusType";
 import CustomTabBar from "../CustomTabBar/CustomTabBar";
 import { useRoute } from "@react-navigation/native";
+import CalloutView from "./CalloutView";
+import { useLines } from "src/redux/sliceLines/sliceLines";
+import BusMarkerBtn from "./BusMarkerBtn";
 
 function MapCustom({ location, setBusesOnMap }) {
   const [modalInfoBus, setModalInfoBus] = useState<Bus>();
   const [modal, setModal] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const settings = useSelector(useSettings);
 
-  const userIcon = require("../../../assets/icon-user.png");
   const route = useRoute();
-
-  console.log("map Rendered");
-
   const markerSelect = useRef();
   const buses = useSelector(useBuses);
+  const lines = useSelector(useLines);
 
   //@ts-ignore
   const markerUser = useRef<Marker>();
@@ -40,7 +39,7 @@ function MapCustom({ location, setBusesOnMap }) {
       setBusesOnMap(
         [
           //@ts-ignore
-          ...mapRef.current?.props.children[1].filter(
+          ...mapRef?.current?.props.children[1].filter(
             (bus) => bus !== undefined
           ),
         ].length
@@ -49,6 +48,14 @@ function MapCustom({ location, setBusesOnMap }) {
     //@ts-ignore
     [mapRef.current?.props.children[1]]
   );
+
+  useEffect(() => {
+    //@ts-ignore
+    mapRef.current.props.children[1] = mapRef.current.props.children[1]
+      .filter((bus) => bus != undefined)
+      .filter((a) => lines.includes(a.props.bus.linha));
+  }, [lines]);
+
   useEffect(() => {
     mapRef.current?.animateToRegion({
       latitude: location[0],
@@ -57,26 +64,20 @@ function MapCustom({ location, setBusesOnMap }) {
       longitudeDelta: 0.006,
     });
   }, [location]);
-
-  // useEffect(() => {
-  //   if (markerSelect.current) {
-  //     //@ts-ignore
-  //     // console.log(mapRef.current?.props.children[1][4].props?.index);
-  //     //@ts-ignore
-  //     const x = mapRef.current?.props?.children[1].find(
-  //       (marker) => marker?.props?.index == markerSelect.current
-  //     );
-  //     // console.log("Marker Selected: ", x);
-  //     x.showCallout();
-  //   }
-  // }, [buses]);
-
   return (
     <>
+      <BusMarkerBtn
+        setIsActive={setIsActive}
+        isActive={isActive}
+        lines={lines}
+        markerBuses={mapRef}
+      />
       <MapView
+        onMarkerPress={() => setIsActive(false)}
         onPress={() => {
           setModal(false);
           markerSelect.current = undefined;
+          setIsActive(false);
         }}
         ref={(el) => (mapRef.current = el)}
         maxZoomLevel={17}
@@ -107,24 +108,13 @@ function MapCustom({ location, setBusesOnMap }) {
             latitude: location.at(0),
             longitude: location.at(1),
           }}
-          icon={require("../../../assets/icon-user.png")}
         >
-          <Callout tooltip>
-            <View style={styles.userIcon}>
-              <Text style={{ color: "#eee" }}>Você</Text>
-            </View>
-          </Callout>
+          <CalloutView />
         </Marker>
-
         {/* Buses Position */}
         {buses.map((bus: Bus) => {
           //@ts-ignore
           if (bus?.count <= 1 || bus.count == undefined) return;
-
-          let latitude;
-          let longitude;
-          latitude = Number(bus.latitude.replace(",", "."));
-          longitude = Number(bus.longitude.replace(",", "."));
 
           return (
             <MarkerCustom
@@ -133,7 +123,7 @@ function MapCustom({ location, setBusesOnMap }) {
               index={bus.ordem}
               key={bus.ordem}
               bus={bus}
-              coords={{ latitude, longitude }}
+              coords={{ latitude: bus.latitude, longitude: bus.longitude }}
               setModal={setModal}
               setModalInfoBus={setModalInfoBus}
               root={bus.root}
@@ -169,14 +159,6 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: "100%",
-  },
-  userIcon: {
-    marginBottom: 10,
-    marginVertical: 12,
-    backgroundColor: "#0e997d",
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 4,
   },
 });
 
