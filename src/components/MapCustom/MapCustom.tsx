@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import EstiloMapa from "../../utils/mapStyle";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import ModalBus from "./ModalBus";
 import MarkerCustom from "./MarkerCustom";
 
@@ -15,11 +15,25 @@ import CalloutView from "./CalloutView";
 import { useLines } from "src/redux/sliceLines/sliceLines";
 import BusMarkerBtn from "./BusMarkerBtn";
 
+const initialState: String[] = [];
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "toggle":
+      if (state.includes(action.payload))
+        return state.filter((line: string) => line !== action.payload);
+      else return [...state, action.payload];
+    default:
+  }
+}
+
 function MapCustom({ location, setBusesOnMap }) {
   const [modalInfoBus, setModalInfoBus] = useState<Bus>();
   const [modal, setModal] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const settings = useSelector(useSettings);
+
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const route = useRoute();
   const markerSelect = useRef();
@@ -71,6 +85,8 @@ function MapCustom({ location, setBusesOnMap }) {
         isActive={isActive}
         lines={lines}
         markerBuses={mapRef}
+        dispatch={dispatch}
+        state={state}
       />
       <MapView
         onMarkerPress={() => setIsActive(false)}
@@ -115,6 +131,8 @@ function MapCustom({ location, setBusesOnMap }) {
         {buses.map((bus: Bus) => {
           //@ts-ignore
           if (bus?.count <= 1 || bus.count == undefined) return;
+
+          if (state.includes(bus.linha)) return;
 
           return (
             <MarkerCustom

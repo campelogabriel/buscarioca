@@ -2,7 +2,14 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 
-function BusMarkerBtn({ isActive, setIsActive, markerBuses, lines }) {
+function BusMarkerBtn({
+  isActive,
+  setIsActive,
+  markerBuses,
+  lines,
+  dispatch,
+  state,
+}) {
   const [busesM, setBusesM] = useState<{ linha: string; n: number }[]>([]);
 
   useEffect(() => {
@@ -23,7 +30,9 @@ function BusMarkerBtn({ isActive, setIsActive, markerBuses, lines }) {
 
   return (
     <TouchableOpacity
-      onPress={() => setIsActive(true)}
+      onPress={() => {
+        setIsActive(true);
+      }}
       disabled={isActive ? true : false}
       style={isActive ? styles.boxActive : styles.box}
     >
@@ -45,6 +54,9 @@ function BusMarkerBtn({ isActive, setIsActive, markerBuses, lines }) {
             busesM.map((bus, i) => {
               return (
                 <TouchableOpacity
+                  onPress={() => {
+                    dispatch({ type: "toggle", payload: bus.linha });
+                  }}
                   key={i}
                   style={{
                     marginTop: 20,
@@ -56,7 +68,7 @@ function BusMarkerBtn({ isActive, setIsActive, markerBuses, lines }) {
                   <Text style={styles.textLine}>{bus.n}</Text>
                   <Ionicons
                     style={{ flex: 1 }}
-                    name="eye"
+                    name={state.includes(bus.linha) ? "eye-off-outline" : "eye"}
                     size={24}
                     color="#efefef"
                   />
@@ -87,6 +99,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderTopRightRadius: 14,
     borderBottomRightRadius: 14,
+    elevation: 4,
   },
   boxActive: {
     flex: 1,
@@ -101,6 +114,7 @@ const styles = StyleSheet.create({
     padding: 13,
     borderTopRightRadius: 14,
     borderBottomRightRadius: 14,
+    elevation: 6,
   },
   containerBox: {
     flexDirection: "row",
