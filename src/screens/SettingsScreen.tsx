@@ -26,7 +26,6 @@ const SettingsScreen = ({ navigation }) => {
 
   const route = useRoute();
 
-  console.log("Settings Screen");
 
   function handleAutomatedFetch() {
     setEnableAuto((v) => {
@@ -109,7 +108,7 @@ const SettingsScreen = ({ navigation }) => {
                 color="#2c9058"
               />
 
-              <Text>Resetar Linhas</Text>
+              <Text>Linhas Escolhidas</Text>
             </View>
             <View>
               <Text>
@@ -127,13 +126,13 @@ const SettingsScreen = ({ navigation }) => {
               <Feather
                 style={{
                   ...styles.icon,
-                  backgroundColor: "#e9e7e7",
+                  backgroundColor: "black",
                 }}
                 name="book-open"
                 size={22}
-                color="black"
+                color="#e9e7e7"
               />
-              <Text>Manual</Text>
+              <Text>Perguntas e Respostas</Text>
             </View>
             <View>
               <Text>
@@ -149,13 +148,13 @@ const SettingsScreen = ({ navigation }) => {
                 style={{
                   padding: 6,
                   borderRadius: 8,
-                  backgroundColor: "#222",
+                  backgroundColor: "#eee",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
                 name="infocirlceo"
                 size={22}
-                color="white"
+                color="#222"
               />
 
               <Text>Sobre</Text>
