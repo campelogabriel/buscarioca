@@ -9,7 +9,7 @@ export const useQueryBuses = (
   enabledBattery
 ) => {
   const { data, fetchStatus, isPaused, isFetching, refetch } = useQuery({
-    refetchInterval: 1000 * 20,
+    refetchInterval: 1000 * 25,
     queryKey: ["buses"],
     queryFn: () => {
       setCountFetch((n) => n + 1);

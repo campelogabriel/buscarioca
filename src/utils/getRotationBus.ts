@@ -23,3 +23,12 @@ export const getRotation = (posAtual: Position, posFim: Position) => {
 //   }
 //   return 0;
 // };
+
+// export const getRotation = (posAtual: Position, posFim: Position) => {
+//   if (!posAtual || !posFim) return 0;
+
+//   const latDiff = posAtual.latitude - posFim.latitude;
+//   const lngDiff = posAtual.longitude - posFim.longitude;
+//   const root = Math.round((Math.atan2(lngDiff, latDiff) * 180) / Math.PI);
+//   return root;
+// };

@@ -6,16 +6,17 @@ function BusMarkerBtn({
   isActive,
   setIsActive,
   markerBuses,
-  lines,
   dispatch,
   state,
+  lines,
 }) {
   const [busesM, setBusesM] = useState<{ linha: string; n: number }[]>([]);
 
   useEffect(() => {
     //@ts-ignore
     lines.map((line) => {
-      const number = markerBuses?.current?.props.children[1]
+      const number = markerBuses?.current?.props.children
+        .at(-1)
         .filter((bus) => bus !== undefined)
         .filter((bus) => bus.props.bus.linha == line).length;
 
@@ -26,10 +27,31 @@ function BusMarkerBtn({
         ];
       });
     });
-  }, [markerBuses.current?.props.children[1]]);
+  }, [markerBuses.current?.props.children]);
+
+  useEffect(() => {
+    setBusesM((prev) => prev.filter((obj) => lines.includes(obj.linha)));
+  }, [lines]);
 
   return (
     <TouchableOpacity
+      onLayout={() => {
+        //@ts-ignore
+        lines.map((line) => {
+          const number = markerBuses?.current?.props.children
+            .at(-1)
+
+            .filter((bus) => bus !== undefined)
+            .filter((bus) => bus.props.bus.linha == line).length;
+
+          setBusesM((b) => {
+            return [
+              ...b.filter((b) => b.linha != line),
+              { linha: line, n: number },
+            ];
+          });
+        });
+      }}
       onPress={() => {
         setIsActive(true);
       }}
@@ -77,7 +99,7 @@ function BusMarkerBtn({
             })
           ) : (
             <Text style={{ color: "#fff", fontWeight: "500", marginTop: 20 }}>
-              Nenhum Onibus no Mapa
+              Nenhum Ônibus no Mapa
             </Text>
           )}
         </>
