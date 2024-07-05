@@ -5,6 +5,18 @@ import { getRotation } from "../../utils/getRotationBus";
 
 const initialStates: Bus[] | any | null = [];
 
+function addTag(line) {
+  let tags = ["SV", "SN", "SE", "SR", "SP", "SD", "SVA", "SVB", "SPA", "SPB"];
+
+  if (tags.some((str) => line.startsWith(str))) return [line];
+
+  let lineNumbers = tags.map((tag) => {
+    return `${tag}${line}`;
+  });
+  lineNumbers.push(line);
+  return lineNumbers;
+}
+
 const sliceBuses = createSlice({
   name: "buses",
   initialState: initialStates,
@@ -76,7 +88,9 @@ const sliceBuses = createSlice({
       return [];
     },
     removeBusByLine(state, { payload }: PayloadAction<string>) {
-      const filtered = state.filter((bus) => bus.linha !== payload);
+      const x = addTag(payload);
+      // const filtered = state.filter((bus) => bus.linha !== payload);
+      const filtered = state.filter((bus) => !x.includes(bus.linha));
       return [...filtered];
     },
   },
