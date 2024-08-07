@@ -6,6 +6,9 @@ const getBuses = async (busesLines: string[], location) => {
         .trim()}&lat=${location.at(0)}&lng=${location.at(1)}`
     );
     const data = await res.json();
+    if (data.status == "fail")
+      throw new Error("Servidor Indisponível. Volte em Breve");
+
     return data;
   } catch (err) {
     return err;
